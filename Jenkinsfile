@@ -58,6 +58,17 @@ pipeline {
         }
     }
 
+    stage('Test EC2 SSH') {
+    steps {
+        sshagent(credentials: ['ec2-ssh']) {
+            sh '''
+                ssh -o StrictHostKeyChecking=no ubuntu@16.4.52.1 \
+                "echo EC2 SSH connection successful && hostname"
+            '''
+        }
+    }
+}
+
     post {
         success {
             echo 'CI/CD Pipeline completed successfully!'
