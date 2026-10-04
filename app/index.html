@@ -1,35 +1,1034 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI CI/CD Monitoring Platform</title>
+    <title>AI-Powered CI/CD Monitoring Platform</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top left, #172554 0%, transparent 35%),
+                radial-gradient(circle at top right, #312e81 0%, transparent 30%),
+                #020617;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            width: 100%;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+            background: rgba(2, 6, 23, 0.75);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #86efac;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #22c55e;
+        }
+
+        /* HERO */
+
+        .hero {
+            max-width: 1200px;
+            margin: auto;
+            padding: 90px 30px 60px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 30px;
+            color: #7dd3fc;
+            background: rgba(14, 165, 233, 0.08);
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 7vw, 78px);
+            line-height: 1.05;
+            font-weight: 800;
+            background: linear-gradient(
+                90deg,
+                #ffffff,
+                #7dd3fc,
+                #a78bfa
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h2 {
+            margin-top: 20px;
+            font-size: 25px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .hero p {
+            max-width: 750px;
+            margin: 25px auto;
+            color: #94a3b8;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .hero-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 13px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            color: white;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .btn-secondary:hover {
+            border-color: #38bdf8;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px 30px 80px;
+        }
+
+        /* SUCCESS CARD */
+
+        .success-card {
+            background: linear-gradient(
+                135deg,
+                rgba(22, 101, 52, 0.25),
+                rgba(15, 23, 42, 0.8)
+            );
+
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-left h3 {
+            color: #86efac;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .success-left p {
+            color: #94a3b8;
+        }
+
+        .success-badge {
+            padding: 10px 18px;
+            border-radius: 30px;
+            background: rgba(34, 197, 94, 0.12);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* SECTION */
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-title h2 {
+            font-size: 34px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #64748b;
+        }
+
+        /* TECHNOLOGY CARDS */
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            margin-bottom: 70px;
+        }
+
+        .tech-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid #1e293b;
+            padding: 25px;
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-6px);
+            border-color: #38bdf8;
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.12);
+        }
+
+        .tech-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .tech-card h3 {
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .tech-card p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* PIPELINE */
+
+        .pipeline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 70px;
+        }
+
+        .pipeline-step {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 20px 18px;
+            min-width: 130px;
+            text-align: center;
+        }
+
+        .pipeline-step .icon {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .pipeline-step strong {
+            display: block;
+            color: white;
+            font-size: 14px;
+        }
+
+        .pipeline-step small {
+            color: #64748b;
+        }
+
+        .arrow {
+            color: #38bdf8;
+            font-size: 25px;
+        }
+
+        /* ARCHITECTURE */
+
+        .architecture {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid #1e293b;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 70px;
+            text-align: center;
+        }
+
+        .architecture-flow {
+            margin-top: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .arch-box {
+            padding: 20px 25px;
+            border-radius: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+
+        .arch-box strong {
+            color: #7dd3fc;
+        }
+
+        .arch-arrow {
+            color: #64748b;
+            font-size: 24px;
+        }
+
+        /* MONITORING */
+
+        .monitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 70px;
+        }
+
+        .monitor-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .monitor-card h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid #1e293b;
+            color: #94a3b8;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        .up {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+
+        footer {
+            border-top: 1px solid #1e293b;
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            background: rgba(2, 6, 23, 0.8);
+        }
+
+        footer strong {
+            color: #94a3b8;
+        }
+
+        #clock {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            nav {
+                padding: 18px 20px;
+            }
+
+            .hero {
+                padding-top: 60px;
+            }
+
+            .success-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .architecture {
+                padding: 25px;
+            }
+
+            .arrow,
+            .arch-arrow {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🚀 AI-Powered CI/CD Monitoring Platform</h1>
+    <!-- NAVBAR -->
 
-    <h2>Deployment Successful!</h2>
+    <nav>
 
-    <p><strong>CI/CD:</strong> Jenkins</p>
-    <p><strong>Source Code:</strong> GitHub</p>
-    <p><strong>Containerization:</strong> Docker</p>
-    <p><strong>Web Server:</strong> Nginx</p>
-    <p><strong>Cloud:</strong> AWS EC2</p>
-    <p><strong>Monitoring:</strong> Prometheus + Grafana</p>
-    <p><strong>Infrastructure Automation:</strong> Ansible</p>
-    <p><strong>Package Management:</strong> Helm</p>
+        <div class="logo">
+            AI<span>DevOps</span> Platform
+        </div>
 
-    <hr>
+        <div class="nav-status">
+            <div class="status-dot"></div>
+            All Systems Operational
+        </div>
 
-    <h3>✅ End-to-End CI/CD Pipeline Working Successfully</h3>
+    </nav>
 
-    <p>
-        Code pushed to GitHub → Jenkins Pipeline →
-        Docker Build &amp; Test → AWS EC2 Deployment
-    </p>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="badge">
+            ENTERPRISE CI/CD & MONITORING PLATFORM
+        </div>
+
+        <h1>
+            AI-Powered<br>
+            CI/CD Monitoring
+        </h1>
+
+        <h2>
+            Automated • Containerized • Cloud Ready
+        </h2>
+
+        <p>
+            A modern DevOps platform demonstrating automated
+            CI/CD deployment, Docker containerization, AWS EC2
+            infrastructure, and real-time monitoring using
+            Prometheus and Grafana.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="#pipeline" class="btn btn-primary">
+                View Pipeline
+            </a>
+
+            <a href="#architecture" class="btn btn-secondary">
+                View Architecture
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+
+        <!-- SUCCESS -->
+
+        <div class="success-card">
+
+            <div class="success-left">
+
+                <h3>
+                    ✓ Deployment Successful
+                </h3>
+
+                <p>
+                    Latest application successfully deployed
+                    through the Jenkins CI/CD pipeline.
+                </p>
+
+            </div>
+
+            <div class="success-badge">
+                ● PRODUCTION READY
+            </div>
+
+        </div>
+
+
+        <!-- TECHNOLOGIES -->
+
+        <div class="section-title">
+
+            <h2>
+                Technology Stack
+            </h2>
+
+            <p>
+                Tools used across the DevOps lifecycle
+            </p>
+
+        </div>
+
+
+        <div class="tech-grid">
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">🐙</div>
+
+                <h3>GitHub</h3>
+
+                <p>
+                    Source code management and version control
+                    for the application and infrastructure.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">🔧</div>
+
+                <h3>Jenkins</h3>
+
+                <p>
+                    Automated CI/CD pipeline for build,
+                    testing and deployment.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">🐳</div>
+
+                <h3>Docker</h3>
+
+                <p>
+                    Containerized application deployment
+                    with reproducible environments.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">🌐</div>
+
+                <h3>Nginx</h3>
+
+                <p>
+                    Lightweight and reliable web server
+                    serving the production application.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">☁️</div>
+
+                <h3>AWS EC2</h3>
+
+                <p>
+                    Cloud infrastructure hosting the
+                    application and monitoring stack.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">📊</div>
+
+                <h3>Prometheus</h3>
+
+                <p>
+                    Metrics collection and infrastructure
+                    monitoring platform.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">📈</div>
+
+                <h3>Grafana</h3>
+
+                <p>
+                    Visualization and monitoring dashboards
+                    for infrastructure metrics.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">⚙️</div>
+
+                <h3>Ansible</h3>
+
+                <p>
+                    Infrastructure configuration and
+                    automation.
+                </p>
+
+            </div>
+
+
+            <div class="tech-card">
+
+                <div class="tech-icon">⎈</div>
+
+                <h3>Helm</h3>
+
+                <p>
+                    Kubernetes application packaging and
+                    deployment management.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- PIPELINE -->
+
+        <section id="pipeline">
+
+            <div class="section-title">
+
+                <h2>
+                    CI/CD Pipeline
+                </h2>
+
+                <p>
+                    Automated software delivery workflow
+                </p>
+
+            </div>
+
+
+            <div class="pipeline">
+
+
+                <div class="pipeline-step">
+
+                    <div class="icon">🐙</div>
+
+                    <strong>GitHub</strong>
+
+                    <small>Source</small>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <div class="pipeline-step">
+
+                    <div class="icon">🔧</div>
+
+                    <strong>Jenkins</strong>
+
+                    <small>Pipeline</small>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <div class="pipeline-step">
+
+                    <div class="icon">🔨</div>
+
+                    <strong>Build</strong>
+
+                    <small>Docker</small>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <div class="pipeline-step">
+
+                    <div class="icon">🧪</div>
+
+                    <strong>Test</strong>
+
+                    <small>Validation</small>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <div class="pipeline-step">
+
+                    <div class="icon">☁️</div>
+
+                    <strong>AWS EC2</strong>
+
+                    <small>Deploy</small>
+
+                </div>
+
+
+                <div class="arrow">→</div>
+
+
+                <div class="pipeline-step">
+
+                    <div class="icon">🌐</div>
+
+                    <strong>Nginx</strong>
+
+                    <small>Application</small>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- ARCHITECTURE -->
+
+        <section id="architecture" class="architecture">
+
+            <div class="section-title">
+
+                <h2>
+                    Deployment Architecture
+                </h2>
+
+                <p>
+                    End-to-end infrastructure workflow
+                </p>
+
+            </div>
+
+
+            <div class="architecture-flow">
+
+
+                <div class="arch-box">
+
+                    🐙<br>
+
+                    <strong>GitHub</strong>
+
+                </div>
+
+
+                <div class="arch-arrow">
+                    →
+                </div>
+
+
+                <div class="arch-box">
+
+                    🔧<br>
+
+                    <strong>Jenkins</strong>
+
+                </div>
+
+
+                <div class="arch-arrow">
+                    →
+                </div>
+
+
+                <div class="arch-box">
+
+                    🐳<br>
+
+                    <strong>Docker</strong>
+
+                </div>
+
+
+                <div class="arch-arrow">
+                    →
+                </div>
+
+
+                <div class="arch-box">
+
+                    ☁️<br>
+
+                    <strong>AWS EC2</strong>
+
+                </div>
+
+
+                <div class="arch-arrow">
+                    →
+                </div>
+
+
+                <div class="arch-box">
+
+                    🌐<br>
+
+                    <strong>Nginx</strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MONITORING -->
+
+        <div class="section-title">
+
+            <h2>
+                Infrastructure Monitoring
+            </h2>
+
+            <p>
+                Real-time monitoring through Prometheus and Grafana
+            </p>
+
+        </div>
+
+
+        <div class="monitor-grid">
+
+
+            <div class="monitor-card">
+
+                <h3>
+                    📊 Prometheus
+                </h3>
+
+                <div class="metric">
+
+                    <span>Node Exporter</span>
+
+                    <span class="up">UP</span>
+
+                </div>
+
+                <div class="metric">
+
+                    <span>Metrics Collection</span>
+
+                    <span class="up">ACTIVE</span>
+
+                </div>
+
+                <div class="metric">
+
+                    <span>Scrape Interval</span>
+
+                    <span>15s</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="monitor-card">
+
+                <h3>
+                    📈 Grafana
+                </h3>
+
+                <div class="metric">
+
+                    <span>Dashboard</span>
+
+                    <span class="up">READY</span>
+
+                </div>
+
+                <div class="metric">
+
+                    <span>Data Source</span>
+
+                    <span>Prometheus</span>
+
+                </div>
+
+                <div class="metric">
+
+                    <span>Monitoring</span>
+
+                    <span class="up">ACTIVE</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="monitor-card">
+
+                <h3>
+                    ☁️ AWS EC2
+                </h3>
+
+                <div class="metric">
+
+                    <span>Application</span>
+
+                    <span class="up">RUNNING</span>
+
+                </div>
+
+                <div class="metric">
+
+                    <span>Nginx</span>
+
+                    <span class="up">UP</span>
+
+                </div>
+
+                <div class="metric">
+
+                    <span>Node Exporter</span>
+
+                    <span class="up">UP</span>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- FINAL MESSAGE -->
+
+        <div class="success-card">
+
+            <div class="success-left">
+
+                <h3>
+                    🚀 End-to-End CI/CD Pipeline Working
+                </h3>
+
+                <p>
+                    GitHub → Jenkins → Docker → AWS EC2 →
+                    Nginx → Prometheus → Grafana
+                </p>
+
+            </div>
+
+            <div class="success-badge">
+                ✓ SUCCESS
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            <strong>AI-Powered CI/CD Monitoring Platform</strong>
+        </p>
+
+        <p>
+            DevOps Engineering Project • AWS • Jenkins • Docker • Prometheus • Grafana
+        </p>
+
+        <div id="clock"></div>
+
+    </footer>
+
+
+    <script>
+
+        function updateClock() {
+
+            const now = new Date();
+
+            const time = now.toLocaleString();
+
+            document.getElementById("clock").innerText =
+                "System Time: " + time;
+
+        }
+
+        updateClock();
+
+        setInterval(updateClock, 1000);
+
+    </script>
 
 </body>
+
 </html>
