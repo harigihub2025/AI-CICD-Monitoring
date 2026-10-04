@@ -21,17 +21,23 @@ pipeline {
         }
 
         stage('Test') {
-            steps {
-                sh '''
-                    docker rm -f jenkins-test 2>/dev/null || true
-                    docker run -d --name jenkins-test -p 8081:80 ai-cicd-nginx:latest
-                    sleep 3
-                    curl -f http://localhost:8081
-                    docker rm -f jenkins-test
-                '''
-            }
-        }
+    steps {
+        sh '''
+            docker rm -f jenkins-test 2>/dev/null || true
 
+            docker run -d --name jenkins-test ai-cicd-nginx:latest
+
+            sleep 3
+
+            docker run --rm \
+              --network container:jenkins-test \
+              curlimages/curl \
+              -f http://localhost
+
+            docker rm -f jenkins-test
+        '''
+    }
+}
         stage('Deploy') {
             steps {
                 sh '''
