@@ -30,8 +30,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
-                    docker compose down || true
-                    docker compose up -d --build
+                    docker rm -f ai-cicd-nginx 2>/dev/null || true
+                    docker run -d \
+                      --name ai-cicd-nginx \
+                      -p 8080:80 \
+                      --restart always \
+                      ai-cicd-nginx:latest
                 '''
             }
         }
