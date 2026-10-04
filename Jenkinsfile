@@ -59,18 +59,26 @@ pipeline {
             }
         }
 
-        stage('Test EC2 SSH') {
-            steps {
-                sshagent(credentials: ['ec2-ssh']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no \
-                        ubuntu@16.4.52.1 \
-                        "echo EC2 SSH connection successful && hostname"
-                    '''
-                }
-            }
+       stage('Test EC2 SSH') {
+    steps {
+        withCredentials([
+            sshUserPrivateKey(
+                credentialsId: 'ec2-ssh',
+                keyFileVariable: 'SSH_KEY',
+                usernameVariable: 'SSH_USER'
+            )
+        ]) {
+            sh '''
+                chmod 600 "$SSH_KEY"
+
+                ssh -i "$SSH_KEY" \
+                    -o StrictHostKeyChecking=no \
+                    "$SSH_USER@16.4.52.1" \
+                    "echo EC2 SSH connection successful && hostname"
+            '''
         }
     }
+}
 
     post {
         success {
