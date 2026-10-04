@@ -16,7 +16,9 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ai-cicd-nginx:latest .'
+                sh '''
+                    docker build -t ai-cicd-nginx:latest .
+                '''
             }
         }
 
@@ -57,11 +59,13 @@ pipeline {
 
         stage('Verify Local') {
             steps {
-                sh 'docker ps'
+                sh '''
+                    docker ps
+                '''
             }
         }
 
-        stage('Test EC2 SSH') {
+        stage('Deploy to EC2') {
             steps {
                 withCredentials([
                     sshUserPrivateKey(
@@ -75,8 +79,37 @@ pipeline {
 
                         ssh -i "$SSH_KEY" \
                             -o StrictHostKeyChecking=no \
-                            "$SSH_USER@16.4.52.1" \
-                            "echo EC2 SSH connection successful && hostname"
+                            "$SSH_USER@16.4.52.1" '
+                                cd ~/AI-CICD-Monitoring &&
+                                git pull origin main &&
+                                sudo docker compose up -d --build
+                            '
+                    '''
+                }
+            }
+        }
+
+        stage('Verify EC2 Deployment') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ec2-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                        chmod 600 "$SSH_KEY"
+
+                        ssh -i "$SSH_KEY" \
+                            -o StrictHostKeyChecking=no \
+                            "$SSH_USER@16.4.52.1" '
+                                echo "===== EC2 CONTAINERS ====="
+                                sudo docker ps
+
+                                echo "===== NGINX CHECK ====="
+                                curl -I http://localhost
+                            '
                     '''
                 }
             }
@@ -86,10 +119,12 @@ pipeline {
     post {
         success {
             echo 'CI/CD Pipeline completed successfully!'
+            echo 'Application deployed successfully to AWS EC2!'
         }
 
         failure {
             echo 'CI/CD Pipeline failed!'
+            echo 'Please check the Jenkins console output.'
         }
     }
 }
